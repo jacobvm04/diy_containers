@@ -33,6 +33,8 @@ struct hash_map_iterator {
 
 unsigned int hash_map_default_hash(void* data);
 
+unsigned int hash_map_size(struct hash_map* hash_map);
+
 struct hash_map hash_map_construct(size_t key_size, size_t var_size, unsigned int buckets, unsigned int (*hash)(void*), bool (*equals)(void*, void*));
 
 void hash_map_put(struct hash_map* hash_map, void* key, void* value);

@@ -9,6 +9,10 @@ unsigned int hash_map_default_hash(void* data) {
 struct hash_map hash_map_construct(size_t key_size, size_t var_size, unsigned int buckets, unsigned int (*hash)(void*), bool (*equals)(void*, void*)) {
     struct hash_map hash_map;
     hash_map.base = array_list_construct(sizeof(struct hash_map_bucket), buckets);
+    hash_map.base.base.vtable->iterator = 0;
+    hash_map.base.base.vtable->deconstruct_custom = 0;
+    hash_map.base.base.vtable->deconstruct = hash_map_deconstruct;
+    hash_map.base.base.vtable->size = hash_map_size;
     hash_map.value_size = var_size;
     hash_map.hash = hash != NULL ? hash : hash_map_default_hash;
     hash_map.equals = equals;
@@ -23,6 +27,11 @@ struct hash_map hash_map_construct(size_t key_size, size_t var_size, unsigned in
 
     return hash_map;
 }
+
+unsigned int hash_map_size(struct hash_map* hash_map) {
+    return hash_map->size;
+}
+
 
 void hash_map_put(struct hash_map* hash_map, void* key, void* value) {
     if (hash_map_contains(hash_map, key)) {
